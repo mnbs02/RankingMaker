@@ -1,18 +1,45 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="16dp">
 
+    <!-- Pole tekstowe na nazwę -->
     <EditText
         android:id="@+id/itemNameInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Nazwa elementu" />
+        android:hint="Nazwa elementu"
+        android:padding="8dp"
+        android:background="@android:drawable/edit_text"
+        android:textColor="@color/black"
+        android:textColorHint="@color/gray" />
 
-    <Button
-        android:id="@+id/colorPickerButton"
+    <!-- Podgląd i wybór koloru -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Wybierz kolor" />
+        android:orientation="horizontal"
+        android:layout_marginTop="16dp">
+
+        <!-- Podgląd koloru -->
+        <Button
+            android:id="@+id/colorPreviewButton"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@android:color/holo_blue_light" />
+
+        <!-- Przycisk wyboru koloru -->
+        <Button
+            android:id="@+id/colorPickerButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Wybierz kolor"
+            android:layout_marginStart="16dp"
+            android:backgroundTint="@color/primary"
+            android:textColor="@android:color/white" />
+    </LinearLayout>
 </LinearLayout>

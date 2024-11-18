@@ -3,8 +3,9 @@ package com.example.rankingmaker
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 
-class ItemTouchHelperCallback(private val adapter: ItemTouchHelperAdapter) :
-    ItemTouchHelper.Callback() {
+class ItemTouchHelperCallback(
+    private val adapter: ItemTouchHelperAdapter
+) : ItemTouchHelper.Callback() {
 
     override fun getMovementFlags(
         recyclerView: RecyclerView,
@@ -25,6 +26,8 @@ class ItemTouchHelperCallback(private val adapter: ItemTouchHelperAdapter) :
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {}
 
+    // Pozwala na przeciąganie po dłuższym przytrzymaniu dowolnego elementu
     override fun isLongPressDragEnabled() = true
+
     override fun isItemViewSwipeEnabled() = false
 }

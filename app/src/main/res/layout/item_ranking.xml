@@ -1,23 +1,39 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="16dp">
+    android:padding="8dp"
+    android:background="@drawable/item_background">
 
-    <View
-        android:id="@+id/itemColor"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginEnd="16dp" />
-
+    <!-- Numer pozycji -->
     <TextView
         android:id="@+id/itemRank"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp" />
+        android:layout_width="50dp"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:textColor="@android:color/white"
+        android:background="@color/black" />
 
+    <!-- Kolor tła elementu -->
+    <View
+        android:id="@+id/itemColor"
+        android:layout_width="10dp"
+        android:layout_height="match_parent"
+        android:layout_marginEnd="8dp"
+        android:background="@android:color/transparent" />
+
+    <!-- Nazwa elementu -->
     <TextView
         android:id="@+id/itemName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center_vertical"
+        android:paddingStart="16dp"
+        android:textSize="16sp"
+        android:textColor="@color/black" />
 </LinearLayout>

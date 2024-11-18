@@ -5,7 +5,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import java.util.Collections
 
 interface ItemTouchHelperAdapter {
     fun onItemMove(fromPosition: Int, toPosition: Int)
@@ -30,14 +29,16 @@ class RankingAdapter(
     override fun getItemCount() = items.size
 
     override fun onItemMove(fromPosition: Int, toPosition: Int) {
-        Collections.swap(items, fromPosition, toPosition)
-        updateRanks()
+        val item = items.removeAt(fromPosition)
+        items.add(toPosition, item)
+        updateRanks() // Aktualizacja numeracji
         notifyItemMoved(fromPosition, toPosition)
     }
 
     private fun updateRanks() {
         items.forEachIndexed { index, item ->
             item.rank = index + 1
+            notifyItemChanged(index) // Aktualizacja widoku pozycji
         }
     }
 
@@ -47,8 +48,8 @@ class RankingAdapter(
         private val colorView: View = itemView.findViewById(R.id.itemColor)
 
         fun bind(item: RankingItem) {
+            rankTextView.text = item.rank.toString()
             nameTextView.text = item.name
-            rankTextView.text = "Pozycja: ${item.rank}"
             colorView.setBackgroundColor(item.color)
         }
     }
