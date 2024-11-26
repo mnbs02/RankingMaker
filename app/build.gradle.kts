@@ -47,4 +47,7 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     implementation("com.github.yukuku:ambilwarna:2.0.1")
+    implementation ("com.google.code.gson:gson:2.10.1")
+    implementation ("com.google.android.material:material:1.5.0")
+
 }

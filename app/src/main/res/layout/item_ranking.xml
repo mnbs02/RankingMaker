@@ -5,7 +5,10 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:padding="8dp"
-    android:background="@drawable/item_background">
+    android:background="@drawable/item_background"
+    android:elevation="2dp"
+    android:translationZ="1dp"
+    android:stateListAnimator="@animator/item_state_animator">
 
     <!-- Numer pozycji -->
     <TextView
@@ -36,4 +39,21 @@
         android:paddingStart="16dp"
         android:textSize="16sp"
         android:textColor="@color/black" />
+
+    <!-- Przyciski akcji -->
+    <ImageButton
+        android:id="@+id/editButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_edit"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:padding="8dp" />
+
+    <ImageButton
+        android:id="@+id/deleteButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_delete"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:padding="8dp" />
 </LinearLayout>
