@@ -50,6 +50,18 @@ class MainActivity : AppCompatActivity() {
         findViewById<MaterialButton>(R.id.loadRankingButton).setOnClickListener { showLoadRankingDialog() }
         findViewById<MaterialButton>(R.id.addItemButton).setOnClickListener { showAddItemDialog() }
         findViewById<MaterialButton>(R.id.clearRankingButton).setOnClickListener { showClearRankingDialog() }
+
+        loadLastOpenedRanking()
+    }
+
+    private fun loadLastOpenedRanking() {
+        rankingStorage.getLastOpenedRanking()?.let { fileName ->
+            rankingStorage.loadRanking(fileName)?.let { items ->
+                rankingItems.clear()
+                rankingItems.addAll(items)
+                rankingAdapter.notifyDataSetChanged()
+            }
+        }
     }
 
     private fun generateRandomColor(): Int {
@@ -96,7 +108,9 @@ class MainActivity : AppCompatActivity() {
             .setPositiveButton("Zapisz") { _, _ ->
                 val fileName = input.text.toString().trim()
                 if (fileName.isNotEmpty()) {
-                    rankingStorage.saveRanking("$fileName.json", rankingItems)
+                    val fullFileName = "$fileName.json"
+                    rankingStorage.saveRanking(fullFileName, rankingItems)
+                    rankingStorage.saveLastOpenedRanking(fullFileName)
                     Toast.makeText(this, "Ranking zapisany", Toast.LENGTH_SHORT).show()
                 }
             }
@@ -111,14 +125,49 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
-        MaterialAlertDialogBuilder(this)
+        val dialog = AlertDialog.Builder(this)
             .setTitle("Wybierz ranking")
-            .setItems(rankings.toTypedArray()) { _, which ->
-                val fileName = "${rankings[which]}.json"
-                rankingStorage.loadRanking(fileName)?.let { items ->
-                    rankingItems.clear()
-                    rankingItems.addAll(items)
-                    rankingAdapter.notifyDataSetChanged()
+            .setNegativeButton("Anuluj", null)
+            .create()
+
+        val listView = RecyclerView(this).apply {
+            layoutManager = LinearLayoutManager(this@MainActivity)
+            adapter = RankingListAdapter(
+                rankings = rankings.toMutableList(),
+                onItemClick = { fileName, position ->
+                    val fullFileName = "$fileName.json"
+                    rankingStorage.loadRanking(fullFileName)?.let { loadedItems ->
+                        rankingItems.clear()
+                        rankingItems.addAll(loadedItems)
+                        rankingAdapter.notifyDataSetChanged()
+                        rankingStorage.saveLastOpenedRanking(fullFileName)
+                        dialog.dismiss()
+                    }
+                },
+                onDeleteClick = { fileName, position ->
+                    showDeleteRankingConfirmationDialog(fileName, position, dialog)
+                }
+            )
+            setPadding(0, 16, 0, 16)
+        }
+
+        dialog.setView(listView)
+        dialog.show()
+    }
+
+    private fun showDeleteRankingConfirmationDialog(fileName: String, position: Int, parentDialog: AlertDialog) {
+        MaterialAlertDialogBuilder(this)
+            .setTitle("Usuń ranking")
+            .setMessage("Czy na pewno chcesz usunąć ranking \"$fileName\"?")
+            .setPositiveButton("Usuń") { _, _ ->
+                val fullFileName = "$fileName.json"
+                if (rankingStorage.deleteRanking(fullFileName)) {
+                    Toast.makeText(this, "Ranking usunięty", Toast.LENGTH_SHORT).show()
+                    // Odśwież listę rankingów
+                    parentDialog.dismiss()
+                    showLoadRankingDialog()
+                } else {
+                    Toast.makeText(this, "Błąd podczas usuwania rankingu", Toast.LENGTH_SHORT).show()
                 }
             }
             .setNegativeButton("Anuluj", null)
