@@ -1,5 +1,8 @@
 package com.example.rankingmaker
 
+import android.content.Context
+import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.RippleDrawable
 import android.os.Handler
 import android.os.Looper
 import android.view.LayoutInflater
@@ -7,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 
 class RankingAdapter(
@@ -150,6 +154,24 @@ class RankingAdapter(
             rankTextView.text = item.rank.toString()
             nameTextView.text = item.name
             colorView.setBackgroundColor(item.color)
+            
+            // Ustawienie koloru ikon na kolor elementu
+            editButton.setColorFilter(item.color)
+            deleteButton.setColorFilter(item.color)
+
+            // Ustawienie koloru obramowania
+            try {
+                val rippleDrawable = itemView.background as RippleDrawable
+                val backgroundDrawable = rippleDrawable.findDrawableByLayerId(R.id.background) as GradientDrawable
+                backgroundDrawable.setStroke(2.dpToPx(itemView.context), item.color)
+            } catch (e: Exception) {
+                // Obsługa błędu w przypadku nieprawidłowego tła
+                e.printStackTrace()
+            }
         }
+    }
+
+    private fun Int.dpToPx(context: Context): Int {
+        return (this * context.resources.displayMetrics.density).toInt()
     }
 }

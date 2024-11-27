@@ -1,7 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primary">#E77331</color>
-    <color name="light_gray">#F0F0F0</color>
-    <color name="black">#000000</color>
-    <color name="gray">#808080</color>
-    <color name="white">#FFFFFF</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    
+    <!-- Główne kolory aplikacji -->
+    <color name="primary">#1F1F1F</color>
+    <color name="primary_dark">#141414</color>
+    <color name="accent">#BB86FC</color>
+    <color name="background">#121212</color>
+    <color name="surface">#1F1F1F</color>
+    <color name="error">#CF6679</color>
+    
+    <!-- Kolory tekstu -->
+    <color name="text_primary">#DEFFFFFF</color>
+    <color name="text_secondary">#99FFFFFF</color>
+    
+    <!-- Kolory przycisków -->
+    <color name="button_background">#2D2D2D</color>
+    <color name="button_text">@color/accent</color>
+    
+    <!-- Kolory dialogów -->
+    <color name="dialog_background">@color/surface</color>
+    <color name="dialog_text">@color/text_primary</color>
+    
+    <!-- Inne kolory -->
+    <color name="light_gray">#424242</color>
 </resources>
