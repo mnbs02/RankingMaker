@@ -9,16 +9,15 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-interface ItemTouchHelperAdapter {
-    fun onItemMove(fromPosition: Int, toPosition: Int)
-}
-
 class RankingAdapter(
     private val items: MutableList<RankingItem>,
     private val onItemMoved: (Int, Int) -> Unit,
     private val onEditClick: (RankingItem, Int) -> Unit,
     private val onDeleteClick: (Int) -> Unit
 ) : RecyclerView.Adapter<RankingAdapter.RankingViewHolder>(), ItemTouchHelperAdapter {
+
+    private var draggedPosition: Int = -1
+    private var targetPosition: Int = -1
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RankingViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -31,6 +30,14 @@ class RankingAdapter(
         holder.bind(item)
     }
 
+    override fun onBindViewHolder(holder: RankingViewHolder, position: Int, payloads: List<Any>) {
+        if (payloads.isNotEmpty() && payloads[0] == "UPDATE_RANK_ONLY") {
+            holder.updateRankOnly()
+        } else {
+            super.onBindViewHolder(holder, position, payloads)
+        }
+    }
+
     override fun getItemCount() = items.size
 
     fun updateRanks() {
@@ -40,18 +47,62 @@ class RankingAdapter(
         notifyDataSetChanged()
     }
 
+    private fun validateRanks(): Boolean {
+        val ranks = items.map { it.rank }.sorted()
+        return ranks == (1..items.size).toList()
+    }
+
+    override fun onItemDragging(fromPosition: Int, toPosition: Int) {
+        draggedPosition = fromPosition
+        targetPosition = toPosition
+        
+        // Tworzymy tymczasową listę rankingów
+        val tempRanks = MutableList(items.size) { it + 1 }
+        
+        if (fromPosition < toPosition) {
+            // Przeciągamy w dół
+            // Usuwamy rank przeciąganego elementu
+            tempRanks.removeAt(fromPosition)
+            // Wstawiamy go na nowej pozycji
+            tempRanks.add(toPosition, toPosition + 1)
+        } else if (fromPosition > toPosition) {
+            // Przeciągamy w górę
+            // Usuwamy rank przeciąganego elementu
+            tempRanks.removeAt(fromPosition)
+            // Wstawiamy go na nowej pozycji
+            tempRanks.add(toPosition, toPosition + 1)
+        }
+        
+        // Przypisujemy nowe rankingi
+        items.forEachIndexed { index, item ->
+            item.rank = tempRanks[index]
+        }
+        
+        // Sprawdzamy poprawność rankingów
+        if (!validateRanks()) {
+            // Jeśli coś jest nie tak, przywracamy prawidłową numerację
+            items.forEachIndexed { index, item ->
+                item.rank = index + 1
+            }
+        }
+        
+        notifyItemRangeChanged(0, itemCount, "UPDATE_RANK_ONLY")
+    }
+
     override fun onItemMove(fromPosition: Int, toPosition: Int) {
-        // Tylko wizualne przesunięcie podczas przeciągania
         val item = items.removeAt(fromPosition)
         items.add(toPosition, item)
         notifyItemMoved(fromPosition, toPosition)
     }
 
     fun finalizeMove(fromPosition: Int, toPosition: Int) {
-        // Aktualizujemy rankingi po zakończeniu przeciągania
-        items.forEachIndexed { index, rankingItem ->
-            rankingItem.rank = index + 1
+        // Po zakończeniu przeciągania aktualizujemy wszystkie pozycje
+        items.forEachIndexed { index, item ->
+            item.rank = index + 1
         }
+        
+        draggedPosition = -1
+        targetPosition = -1
         notifyDataSetChanged()
     }
 
@@ -82,6 +133,12 @@ class RankingAdapter(
                     onDeleteClick(position)
                 }
             }
+        }
+
+        fun updateRankOnly() {
+            val currentPosition = adapterPosition
+            val item = items[currentPosition]
+            rankTextView.text = item.rank.toString()
         }
 
         fun bind(item: RankingItem) {

@@ -32,6 +32,8 @@ class ItemTouchHelperCallback(
         dragTo = toPosition
 
         adapter.onItemMove(fromPosition, toPosition)
+        adapter.onItemDragging(fromPosition, toPosition)
+        
         return true
     }
 
